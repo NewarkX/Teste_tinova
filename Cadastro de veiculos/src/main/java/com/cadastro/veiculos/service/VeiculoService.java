@@ -3,7 +3,14 @@ package com.cadastro.veiculos.service;
 import com.cadastro.veiculos.dto.VeiculoDto;
 import com.cadastro.veiculos.entities.Veiculo;
 import com.cadastro.veiculos.repositories.VeiculoRepository;
+import com.cadastro.veiculos.service.exceptions.DatabaseException;
+import com.cadastro.veiculos.service.exceptions.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,5 +49,33 @@ public class VeiculoService {
         entity.setVendido(dto.isVendido());
         entity = repository.save(entity);
         return new VeiculoDto(entity);
+    }
+
+    @Transactional
+    public VeiculoDto update(Integer id, VeiculoDto dto) {
+        try {
+            Veiculo entity = repository.getReferenceById(id);
+            entity.setVeiculo(dto.getVeiculo()); 
+            entity.setMarca(dto.getMarca()); 
+            entity.setAno(dto.getAno()); 
+            entity.setDescricao(dto.getDescricao()); 
+            entity.setVendido(dto.isVendido());
+            entity = repository.save(entity);
+            return new VeiculoDto(entity);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Id not found" + id);
+        }
+           
+    }
+
+    public void delete(Integer id) {
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("Id not found" + id); 
+        } 
+        catch (DataIntegrityViolationException e){
+            throw new DatabaseException("Integrity violation");
+        } 
     }
 }
