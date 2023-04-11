@@ -1,10 +1,8 @@
 package com.cadastro.veiculos.resource;
 
 import com.cadastro.veiculos.dto.VeiculoDto;
-import com.cadastro.veiculos.entities.Veiculo;
-import com.cadastro.veiculos.service.VeiculoService;
 
-import jakarta.servlet.Servlet;
+import com.cadastro.veiculos.service.VeiculoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +39,12 @@ public class VeiculoResource {
         return ResponseEntity.ok().body(dto);
     }
 
+    @GetMapping(value = "/findUnSoldvehicles")
+    public ResponseEntity<List<VeiculoDto>> findUnSoldvehicles(){
+        List<VeiculoDto> list = service.findUnSoldvehicles();
+        return ResponseEntity.ok().body(list);
+    }
+
     @PostMapping
     public ResponseEntity<VeiculoDto> insert(@RequestBody VeiculoDto dto){
         dto = service.insert(dto);
@@ -61,4 +65,6 @@ public class VeiculoResource {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+   
 }

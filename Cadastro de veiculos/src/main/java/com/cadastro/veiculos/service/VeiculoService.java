@@ -78,4 +78,9 @@ public class VeiculoService {
             throw new DatabaseException("Integrity violation");
         } 
     }
+
+    public List<VeiculoDto> findUnSoldvehicles(){
+        List<Veiculo> list = repository.findUnSoldvehicles();
+        return list.stream().map(x -> new VeiculoDto(x)).collect(Collectors.toList());
+    }
 }

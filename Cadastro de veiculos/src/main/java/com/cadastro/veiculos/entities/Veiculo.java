@@ -2,7 +2,6 @@ package com.cadastro.veiculos.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -10,17 +9,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "tab_veiculo")
+@Table(name = "tb_veiculo")
 public class Veiculo implements Serializable {
 	private static final long serialVersionUID = 1L;
     
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
+	
 	@Column(nullable = false)
 	private String veiculo;
 	
@@ -107,16 +109,18 @@ public class Veiculo implements Serializable {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Instant createdAt) {
-		this.createdAt = createdAt;
-	}
-
 	public Instant getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Instant updatedAt) {
-		this.updatedAt = updatedAt;
+	@PrePersist
+	public void prePersist(){
+		createdAt = Instant.now();
+	}
+
+	@PreUpdate
+	public void preUpdate(){
+		updatedAt = Instant.now();
 	}
 
 	@Override
